@@ -1,0 +1,45 @@
+# фрагменты для вставки в swagger.yaml проекта
+
+paths:
+  /location:
+    x-swagger-router-controller: location # <--- будущий контроллер
+    get:
+      parameters:
+        - name: lat
+          in: query
+          type: number
+          required: true
+        - name: lon
+          in: query
+          type: number
+          required: true
+      responses:
+        200:
+          description: current temperature
+          schema: # <--- подмножество правил json-schema
+            type: object
+            additionalProperties: false # <--- никаких дополнительных параметров
+            properties:
+              celsius:
+                type: integer
+                default: 42 # <--- значение по умолчанию для фиктивного результата
+        400:
+          $ref: '#/responses/IllegalInput'
+        404:
+          $ref: '#/responses/NotFound'
+        500:
+          $ref: '#/responses/GeneralError'
+
+responses:
+  NotFound:
+    description: Entity not found.
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  IllegalInput:
+    description: Illegal input for operation.
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  GeneralError:
+    description: General Error
+    schema:
+      $ref: '#/definitions/ErrorResponse'
