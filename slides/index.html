@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Shower Presentation Engine</title>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="shower/themes/ribbon/styles/screen-16x10.css">
+</head>
+<body class="shower list">
+	<header class="caption">
+		<h1>Swagger: REST API с нуля и красиво</h1>
+		<p>Vitaliy Meshchaninov</p>
+	</header>
+	<section class="slide" id="cover">
+		<h2>Swagger: REST API с нуля и красиво</h2>
+		<p>Vitaliy Meshchaninov</p>
+		<!--
+			To apply styles to the certain slides
+			set slide ID to get needed elements
+			-->
+		<style>
+			#cover h2 {
+				margin:30px 0 0;
+				font-size:60px;
+				}
+			#cover p {
+				margin:10px 0 0;
+				font-style:italic;
+				font-size:20px;
+				}
+		</style>
+	</section>
+	<section class="slide">
+		<h2>термины</h2>
+		<ul>
+			<li>клиент — потребитель API, пусть даже человек за соседним столом</li>
+			<li>ручка — handler, endpoint</li>
+			<li>фиктивный — mock</li>
+		</ul>
+	</section>
+	<section class="slide">
+		<h2>REST API</h2>
+		<ul>
+			<li>как понять, что ручка плохо спроектирована раньше</li>
+			<li>как дать клиенту потыкать в фиктивную ручку</li>
+			<li>как сделать документацию и держать ее актуальной</li>
+			<li>как не дублировать работу</li>
+		</ul>
+	</section>
+	<section class="slide">
+		<h2>Я сделал ручку, но...</h2>
+		<ol>
+			<li>она не понравилась</li>
+			<li>теперь спрашивают как пользоваться</li>
+			<li>разработка клиента задержалась</li>
+			<li>данные не проходят валидацию</li>
+		</ol>
+	</section>
+	<section class="slide">
+		<h2>Надо было</h2>
+		<ol>
+			<li>договориться, как будет работать интерфейс</li>
+			<li>записать коды, формат данных и ошибок</li>
+			<li>фиктивный интерфейс</li>
+			<li>общий файл</li>
+		</ol>
+	</section>
+	<section class="slide">
+		<h2>Задача</h2>
+		<p>Сделать ручку для получения погоды по переданным координатам</p>
+	</section>
+	<section class="slide">
+		<h2>1. Пишем в таск</h2>
+		<p><code>GET</code> запрос к <code>https://.../location?lat={lat}&amp;lon={lon}</code> вернет <code>JSON</code> вида <code>{ temperature: %число% }</code></p>
+	</section>
+	<section class="slide">
+		<h2>2. Плохо</h2>
+		<ul>
+			<li>формат координат?</li>
+			<li>шкала температуры?</li>
+			<li>формат числа температуры?</li>
+			<li>код ответа 200?</li>
+			<li>а если неправильная координата?</li>
+			<li>а если нет данных о погоде?</li>
+			<li>а <s>мячик</s> ошибку сбросите?</li>
+			<li>а в каком формате?</li>
+		</ul>
+	</section>
+	<section class="slide">
+		<h2>3. Мы сильные, мы упорные</h2>
+		<p>примеры успешных ответов сервера в README.md и пачкой json-файлов</p>
+	</section>
+	<section class="slide">
+		<h2>4. ХХиП</h2>
+		<p>Я сделяль, работает</p>
+	</section>
+	<section class="slide">
+		<h2>Что-то пошло не так?</h2>
+	</section>
+	<section class="slide">
+		<h2>Атака клонов</h2>
+		<ol>
+			<li>описание в таске</li>
+			<li>документация в README.md</li>
+			<li>фиктивные ответы сервера в тестах клиента</li>
+			<li>фиктивные ответы сервера в документации</li>
+			<li>правила валидации на сервере</li>
+		</ol>
+	</section>
+	<section class="slide">
+		<h2>Инструмент?</h2>
+		<ul>
+			<li>apiDoc</li>
+			<li>RAML</li>
+			<li>Blueprint (Apiary)</li>
+			<li>Swagger</li>
+		</ul>
+	</section>
+	<section class="slide">
+		<h2>А если Swagger?</h2>
+		<pre>
+			<code>swagger: '2.0'</code>
+			<code>info:</code>
+			<code>  title: Example Weather server documentation</code>
+			<code>  version: v1</code>
+			<code>paths: {}</code>
+		</pre>
+	</section>
+	<section class="slide">
+		<h2>Сразу</h2>
+		<pre>
+			<code>...</code>
+			<code>basePath: /</code>
+			<code>schemes:</code>
+			<code>  - https</code>
+			<code>consumes:</code>
+			<code>  - application/json</code>
+			<code>produces:</code>
+			<code>  - application/json</code>
+			<code>...</code>
+		</pre>
+	</section>
+	<section class="slide">
+		<pre style="font-size: 18px">
+			<code>  /location:</code>
+			<code>    x-swagger-router-controller: location # <--- будущий контроллер</code>
+			<code>    get:</code>
+			<code>      parameters:</code>
+			<code>        - { name: lat, in: query, type: number, required: true }</code>
+			<code>        - { name: lon, in: query, type: number, required: true }</code>
+			<code>      responses:</code>
+			<code>        default:</code>
+			<code>          description: результат в json</code>
+			<code>          examples:</code>
+			<code>            application/json:</code>
+			<code>              temperature: 1</code>
+		</pre>
+	</section>
+	<section class="slide">
+		<pre style="font-size: 18px">
+			<code>      responses:</code>
+			<code>        200:</code>
+			<code>          description: current temperature</code>
+			<code>          schema: # <--- подмножество правил json-schema</code>
+			<code>            type: object</code>
+			<code>            additionalProperties: false # <--- никаких дополнительных параметров</code>
+			<code>            properties:</code>
+			<code>              celsius:</code>
+			<code>                type: integer</code>
+			<code>                default: 42 # <--- значение по умолчанию для фиктивного результата</code>
+			<code>        400:</code>
+			<code>          $ref: '#/responses/IllegalInput'</code>
+			<code>        404:</code>
+			<code>          $ref: '#/responses/NotFound'</code>
+			<code>        500:</code>
+			<code>          $ref: '#/responses/GeneralError'</code>
+		</pre>
+	</section>
+	<section class="slide">
+		<h2>Вопросы клиента</h2>
+		<ul>
+			<li>[x] с плавающей точкой</li>
+			<li>[x] по Цельсию</li>
+			<li>[x] целое</li>
+			<li>[x] коды ответов</li>
+			<li>[x] неправильная координата — 400</li>
+			<li>[x] нет данных — 404</li>
+			<li>[x] сбросим</li>
+			<li>[&nbsp;&nbsp;] а в каком формате ошибки?</li>
+		</ul>
+	</section>
+	<section class="slide">
+		<pre style="font-size: 22px">
+			<code>...</code>
+			<code>responses: # блок переиспользуемых ответов</code>
+			<code>  NotFound:</code>
+			<code>    description: Entity not found.</code>
+			<code>    schema: { $ref: '#/definitions/ErrorResponse' }</code>
+			<code>  IllegalInput:</code>
+			<code>    description: Illegal input for operation.</code>
+			<code>    schema: { $ref: '#/definitions/ErrorResponse' }</code>
+			<code>  GeneralError:</code>
+			<code>    description: General Error</code>
+			<code>    schema: { $ref: '#/definitions/ErrorResponse' }</code>
+		</pre>
+	</section>
+	<section class="slide">
+		<pre>
+			<code>...</code>
+			<code>definitions: # блок переиспользуемых типов данных</code>
+			<code>  ErrorResponse:</code>
+			<code>    required:</code>
+			<code>      - message</code>
+			<code>    properties:</code>
+			<code>      message:</code>
+			<code>        type: string</code>
+		</pre>
+	</section>
+	<section class="slide">
+		<h2>Вопросы клиента</h2>
+		<ul>
+			<li>[x] с плавающей точкой</li>
+			<li>[x] по Цельсию</li>
+			<li>[x] целое</li>
+			<li>[x] коды ответов</li>
+			<li>[x] неправильная координата — 400</li>
+			<li>[x] нет данных — 404</li>
+			<li>[x] сбросим</li>
+			<li>[x] RTFM :)</li>
+		</ul>
+	</section>
+	<section class="slide">
+		<h2>Swagger</h2>
+		<p>Решили две проблемы.</p>
+		<ul>
+			<li>ручка одобрена</li>
+			<li>описание записано</li>
+		</ul>
+	</section>
+	<section class="slide">
+		<h2 class="shout">2/3</h2>
+	</section>
+	<section class="slide">
+		<h2 class="shout">Демо</h2>
+	</section>
+	<section class="slide">
+		<h2>Swagger: REST API с нуля и красиво</h2>
+		<p>Vitaliy Meshchaninov</p>
+		<p>twitter, telegram, whatever — @glukki</p>
+	</section>
+	<script src="shower/shower.min.js"></script>
+	<!-- Copyright © 2015 Yours Truly, Famous Inc. -->
+	<!-- Photos by John Carey, fiftyfootshadows.net -->
+</body>
+</html>
