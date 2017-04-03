@@ -142,7 +142,7 @@
 		</pre>
 	</section>
 	<section class="slide">
-		<pre style="font-size: 18px">
+		<pre style="font-size: 20px">
 			<code>  /location:</code>
 			<code>    x-swagger-router-controller: location # <--- будущий контроллер</code>
 			<code>    get:</code>
@@ -169,12 +169,9 @@
 			<code>              celsius:</code>
 			<code>                type: integer</code>
 			<code>                default: 42 # <--- значение по умолчанию для фиктивного результата</code>
-			<code>        400:</code>
-			<code>          $ref: '#/responses/IllegalInput'</code>
-			<code>        404:</code>
-			<code>          $ref: '#/responses/NotFound'</code>
-			<code>        500:</code>
-			<code>          $ref: '#/responses/GeneralError'</code>
+			<code>        400: { $ref: '#/responses/IllegalInput' }</code>
+			<code>        404: { $ref: '#/responses/NotFound' }</code>
+			<code>        500: { $ref: '#/responses/GeneralError' }</code>
 		</pre>
 	</section>
 	<section class="slide">
